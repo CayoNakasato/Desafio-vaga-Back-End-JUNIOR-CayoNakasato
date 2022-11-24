@@ -1,13 +1,14 @@
 def read_txt(path):
-    list = []
+    separated_info = []
 
     with open(path, "r", encoding="utf8") as file:
-        for line in file:
-            list.append(line)
+        for info in file:
+            separated_info.append(info)
             
-        return list
+        return separated_info
 
-def split_transactions(transaction: str):
+def split_transactions(transaction):
+    
     type = transaction[0:1]
 
     date = transaction[1:9]
@@ -20,7 +21,7 @@ def split_transactions(transaction: str):
 
     time = transaction[42:48]
 
-    shop_owner = transaction[48:62]
+    owner = transaction[48:62]
 
     shop_name = transaction[62:79]
 
@@ -30,7 +31,7 @@ def split_transactions(transaction: str):
 
     day = date[6:8]
 
-    full_year = f"{year}/{month}/{day}"
+    realDate = f"{year}/{month}/{day}"
 
     hour = time[0:2]
 
@@ -38,28 +39,39 @@ def split_transactions(transaction: str):
 
     seconds = time[4:6]
 
-    full_hour = f"{hour}:{minutes}:{seconds}"
+    realHour = f"{hour}:{minutes}:{seconds}"
 
-    split = {
+    value = (int(value)/100)
+
+    transaction_info = {
         "type": type,
-        "date": full_year,
-        "value": int(value),
+        "date": realDate,
+        "value": value,
         "cpf": cpf,
         "card": card,
-        "hour": full_hour,
-        "shop_owner": shop_owner.rstrip(),
+        "hour": realHour,
+        "owner": owner.rstrip(),
         "shop_name": shop_name.rstrip(),
     }
 
-    return split
+    return transaction_info
 
 def transaction_list(path):
-    files = read_txt(path)
+    cnab_file = read_txt(path)
     
     transaction_list = []
 
-    for file in files:
+    for file in cnab_file:
         transaction = split_transactions(file)
         transaction_list.append(transaction)
 
     return transaction_list
+
+def sum_values(transaction_list):
+    sum = 0
+    for transaction in transaction_list:
+        if transaction["type"] == "2" or transaction["type"] == "3" or transaction["type"] == "9":
+            sum -= transaction["value"]
+        else:
+          sum += transaction["value"]
+    return sum

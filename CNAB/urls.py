@@ -15,14 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from upload_file.views import upload_file
+from upload_file.views import upload_file, render_cards
 
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("home/", upload_file, name="home.html")
+    path("home/", upload_file, name="home.html"),
+    path("transactions/", render_cards, name="render_cards.html")
 ]
 
 if settings.DEBUG:
